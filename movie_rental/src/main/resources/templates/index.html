@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<!-- This is for using Thymeleaf -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Rental System</title>
+    <!-- Compiled and minified CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+          rel="stylesheet">
+
+    <!-- Compiled and minified JavaScript -->
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</head>
+<link href="webjars/bootstrap/4.0.0-2/css/bootstrap.min.css" rel="stylesheet"/>
+
+<script src="webjars/jquery/2.2.4/jquery.min.js" type="text/javascript"></script>
+<script>
+$(document).ready(function(){
+    $('.nBtn').on('click', function(event) {
+        event.preventDefault();
+        var href = $(this).attr('href');
+        var text = $(this).text();
+        $.get(href, function (movie, status) {
+            $('.myFormCreate #movieId').val(movie.id);
+        });
+       $('.myFormCreate #firstName').val('');
+       $('.myFormCreate #lastName').val('');
+       $('.myFormCreate #email').val('');
+       $('.myFormCreate #days').val('');
+       $('.myFormCreate #myModalCreate').modal();
+
+    });
+});
+
+
+
+</script>
+<script src="webjars/bootstrap/4.0.0-2/js/bootstrap.min.js" type="text/javascript"></script>
+
+<body style="max-width: 960px; margin: 16px auto; padding: 16px">
+<h3>Movie List</h3>
+<!--<a th:href="@{/showNewUserForm}"-->
+<!--   class="waves-effect waves-light btn">Add new user</a>-->
+
+<div class="bottom">
+
+    <div class="col">
+        <div class="container">
+            <div align="center" style="margin-top: 20px">
+                <table class="responsive-table striped highlight centered">
+                    <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Movie Name</th>
+                        <th>Description</th>
+                        <th>Launch Date</th>
+                        <th>Director</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>Duration</th>
+                        <th>Rent Movie</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <!-- You can access model attributes which are added in a Controller(MovieRentalSystemController.java) with ${attributeName}.
+                         In this case, it is "${listMovies}".
+                         To show all movies data in this table, you need to use "th:each" in the thymeleaf template and iterate the movie of listMovies -->
+                    <tr th:each="movie: ${listMovies}">
+                        <td><img height=300 th:src="@{${'/image/' + movie.id}}" width=300></td>
+                        <td th:text="${movie.name}"></td>
+                        <td th:text="${movie.description}"></td>
+                        <td th:text="${movie.launch_date}"></td>
+                        <td th:text="${movie.director}"></td>
+                        <td th:text="${movie.type}"></td>
+                        <td th:text="${movie.price}"></td>
+                        <td th:text="${movie.duration}"></td>
+                        <td>
+                            <!-- The link which sends GET request to "/findMovie/{id}" (id is movie.id)  -->
+                            <a class="btn btn-success nBtn"
+                               th:href="@{/findMovie/{id}(id=${movie.id})}">Rent Movie</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+
+            <!--#Modal for user create-->
+            <div class="myFormCreate">
+                <form method="post" th:action="@{/rentMovie}">
+                    <div aria-hidden="true" aria-labelledby="modalLabelCreate" class="modal fade" id="myModalCreate"
+                         role="dialog" tabindex="-1">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div align="right" class="modal-header">
+                                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="alert alert-info">
+                                        Please add your details
+                                    </p>
+                                    <div class="form-group">
+                                        <!--<label for="movieId" class="col-form-label">movieId:</th:text></label>-->
+                                        <input class="form-control" id="movieId" name="movieId" type="hidden" value=""/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="firstName">First Name:</label>
+                                        <input class="form-control" id="firstName" name="firstName" type="text"
+                                               value=""/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="lastName">Last Name:</label>
+                                        <input class="form-control" id="lastName" name="lastName" type="text" value=""/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="email">User email:</label>
+                                        <input class="form-control" id="email" name="email" type="text" value=""/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="days">How many days:</label>
+                                        <input class="form-control" id="days" name="days" type="text" value=""/>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                    <input class="btn btn-primary" type="submit" value="Done"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!--End form-->
+        </div>
+    </div>
+</div>
+</body>
+</html>
